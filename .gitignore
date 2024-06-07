@@ -1,0 +1,9 @@
+# ingore .terraform dir
+.terraform/*
+
+# tf state files
+*.tfstate
+*.tfstate.*
+
+# tf variable file, may include sensetive data
+# *.tfvars

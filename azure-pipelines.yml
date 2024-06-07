@@ -1,0 +1,86 @@
+trigger:
+- main
+
+pool:
+  vmImage: 'ubuntu-latest'
+
+variables:
+  # Docker image name
+  imageName: 'myacrregistry.azurecr.io/service'
+
+  # Azure Container Registry details
+  acrLoginServer: 'myacrregistry.azurecr.io'
+  acrUsername: "***"
+  acrPassword: "***"
+
+  # # AKS details
+  # aksCluster: 'myAKSCluster'
+  # aksResourceGroup: 'myResourceGroup'
+  # kubernetesNamespace: 'default'
+
+steps:
+- task: UsePythonVersion@0
+  inputs:
+    versionSpec: '3.x'
+    addToPath: true
+
+- task: InstallTerraform@0
+  inputs:
+    terraformVersion: 'latest'
+
+- script: |
+    terraform init
+    terraform plan -out=tfplan -input=false
+  displayName: 'Terraform init and plan'
+
+- script: |
+    terraform apply tfplan
+  displayName: 'Terraform apply'
+
+
+
+# - script: |
+#     docker build -t $(imageName)1:$(Build.BuildId) -f service1/Dockerfile .
+#     docker build -t $(imageName)2:$(Build.BuildId) -f service2/Dockerfile .
+#     docker build -t $(imageName)3:$(Build.BuildId) -f service3/Dockerfile .
+#   displayName: 'Build Docker images'
+
+# - task: Docker@2
+#   inputs:
+#     containerRegistry: 'myacrregistry'
+#     repository: 'service1'
+#     command: 'push'
+#     dockerfile: 'service1/Dockerfile'
+#     tags: |
+#       $(Build.BuildId)
+#   displayName: 'Push service1 Docker image to ACR'
+
+# - task: Docker@2
+#   inputs:
+#     containerRegistry: 'myacrregistry'
+#     repository: 'service2'
+#     command: 'push'
+#     dockerfile: 'service2/Dockerfile'
+#     tags: |
+#       $(Build.BuildId)
+#   displayName: 'Push service2 Docker image to ACR'
+
+# - task: Docker@2
+#   inputs:
+#     containerRegistry: 'myacrregistry'
+#     repository: 'service3'
+#     command: 'push'
+#     dockerfile: 'service3/Dockerfile'
+#     tags: |
+#       $(Build.BuildId)
+#   displayName: 'Push service3 Docker image to ACR'
+
+# - task: AzureCLI@2
+#   inputs:
+#     azureSubscription: 'MyAzureSubscription'
+#     scriptType: 'bash'
+#     scriptLocation: 'inlineScript'
+#     inlineScript: |
+#       az aks get-credentials --resource-group $(aksResourceGroup) --name $(aksCluster)
+#       kubectl apply -f k8s-deployment.yml
+#   displayName: 'Deploy to AKS'

@@ -2,41 +2,51 @@ trigger:
 - main
 
 pool:
-  vmImage: 'ubuntu-latest'
+  vmImage: 'local'
 
 variables:
+  TF_VERSION: 'v1.5.7'
+  ARM_CLIENT_ID: $(armClientId)
+  ARM_CLIENT_SECRET: $(armClientSecret)
+  ARM_SUBSCRIPTION_ID: $(armSubscriptionId)
+  ARM_TENANT_ID: $(armTenantId)
   # Docker image name
-  imageName: 'myacrregistry.azurecr.io/service'
+  # imageName: 'myacrregistry.azurecr.io/service'
 
   # Azure Container Registry details
-  acrLoginServer: 'myacrregistry.azurecr.io'
-  acrUsername: "***"
-  acrPassword: "***"
+  # acrLoginServer: 'myacrregistry.azurecr.io'
+  # acrUsername: "***"
+  # acrPassword: "***"
 
   # # AKS details
   # aksCluster: 'myAKSCluster'
   # aksResourceGroup: 'myResourceGroup'
   # kubernetesNamespace: 'default'
 
-steps:
-- task: UsePythonVersion@0
-  inputs:
-    versionSpec: '3.x'
-    addToPath: true
+jobs:
+- job: MyJob
+  displayName: 'My Job'
+  strategy:
+    parallel: 1
+  steps:
+  - task: UsePythonVersion@0
+    inputs:
+      versionSpec: '3.x'
+      addToPath: true
 
-- task: InstallTerraform@0
-  inputs:
-    terraformVersion: 'latest'
+  - task: TerraformInstaller@0
+    inputs:
+      terraformVersion: '$(TF_VERSION)'
+    displayName: 'Install Terraform'
 
-- script: |
-    terraform init
-    terraform plan -out=tfplan -input=false
-  displayName: 'Terraform init and plan'
+  - script: |
+      terraform init
+      terraform plan -out=tfplan -input=false
+    displayName: 'Terraform init and plan'
 
-- script: |
-    terraform apply tfplan
-  displayName: 'Terraform apply'
-
+  - script: |
+      terraform apply tfplan
+    displayName: 'Terraform apply'
 
 
 # - script: |

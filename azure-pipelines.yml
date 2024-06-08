@@ -2,7 +2,8 @@ trigger:
 - main
 
 pool:
-  vmImage: 'local'
+  # vmImage: 'ubuntu-latest'
+  name: 'local'
 
 variables:
   TF_VERSION: 'v1.5.7'
@@ -29,15 +30,10 @@ jobs:
   strategy:
     parallel: 1
   steps:
-  - task: UsePythonVersion@0
-    inputs:
-      versionSpec: '3.x'
-      addToPath: true
-
-  - task: TerraformInstaller@0
-    inputs:
-      terraformVersion: '$(TF_VERSION)'
-    displayName: 'Install Terraform'
+  # - task: TerraformInstaller@0
+  #   inputs:
+  #     terraformVersion: '$(TF_VERSION)'
+  #   displayName: 'Install Terraform'
 
   - script: |
       terraform init

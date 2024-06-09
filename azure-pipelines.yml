@@ -2,7 +2,7 @@ trigger:
 - main
 
 pool:
-  # vmImage: 'ubuntu-latest'
+  # for local server to build
   name: 'local'
 
 variables:
@@ -25,15 +25,15 @@ variables:
   # kubernetesNamespace: 'default'
 
 jobs:
-- job: MyJob
+- job: Myjob
   displayName: 'My Job'
   strategy:
     parallel: 1
   steps:
-  # - task: TerraformInstaller@0
-  #   inputs:
-  #     terraformVersion: '$(TF_VERSION)'
-  #   displayName: 'Install Terraform'
+  - task: TerraformInstaller@0
+    inputs:
+      terraformVersion: '$(TF_VERSION)'
+    displayName: 'Install Terraform'
 
   - script: |
       terraform init
@@ -45,6 +45,7 @@ jobs:
     displayName: 'Terraform apply'
 
 
+# if k8s deployed, used the script blew
 # - script: |
 #     docker build -t $(imageName)1:$(Build.BuildId) -f service1/Dockerfile .
 #     docker build -t $(imageName)2:$(Build.BuildId) -f service2/Dockerfile .

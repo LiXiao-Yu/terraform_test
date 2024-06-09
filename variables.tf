@@ -31,11 +31,10 @@ variable "azurerm_sql_database_name" {}
 # cache
 variable "cache_name" {}
 # vault
-variable "azurerm_key_vault_name" {}
+variable "key_vault_name" {}
+variable "key_vault_resource_group" {}
 variable "db_name" {}
-variable "db_name_info" {}
 variable "db_password_name" {}
-variable "db_password_info" {}
 # k8s
 variable "azurerm_kubernetes_cluster_name" {}
 variable "azurerm_container_registry_name" {}
